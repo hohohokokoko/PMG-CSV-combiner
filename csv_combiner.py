@@ -1,23 +1,34 @@
+"""
+This module is used to combine multiple CSV files run as a command line tool.
+
+Classes:
+    CSVCombiner: Validate and combine multiple CSV files given their urls
+
+Functions:
+    main: Receive command line arguments, instantiate a CSVCombiner, and run the combine function
+"""
 import sys
 import os
 from itertools import islice
 
 
 class CSVCombiner:
+    """Validate and combine multiple CSV files"""
     def __init__(self, args):
-        """Initialize a CSV combiner"""
+        """Initialize a CSVCombiner object with a list of file urls"""
         self.__urls = args
         self.__basenames = []
 
 
     def validate_args(self):
-        """Validate the number of arguments"""
+        """Validate the number of files"""
         if len(self.__urls) <= 1:
             sys.exit("Please specify at least two files.")
 
 
     def validate_files(self):
-        """Validate files"""
+        """Validate files exist and not empty"""
+        # iterate through all urls
         for url in self.__urls:
             if not os.path.exists(url):
                 sys.exit("File does not exist: " + url)
@@ -26,11 +37,13 @@ class CSVCombiner:
 
 
     def validate_columns(self):
-        """Validate whether all files have the same column names"""
+        """Validate all files have the same column names"""
         column_names = ""
+        # iterate through all urls and read files
         for i, url in enumerate(self.__urls):
             first_line = ""
             with open(url, 'r') as f:
+                # only read the first line of each file which is the column names
                 first_line = f.readline().strip('\n')
             if (i == 0):
                 column_names = first_line
@@ -40,9 +53,37 @@ class CSVCombiner:
 
 
     def get_basename(self):
-            """Get basenames of all files"""
-            for url in self.__urls:
-                self.__basenames.append(os.path.basename(url))
+        """Get basenames of all files"""
+        # iterate through all urls
+        for url in self.__urls:
+            # store each file's basename
+            self.__basenames.append(os.path.basename(url))
+
+
+    def read_write_util(self, batch_size, f, i):
+        """
+        Read, modify, and write a file in batches of lines
+
+        Parameters:
+            batch_size: Number of lines to operate in a batch
+            f: File handle of the current file
+            i: Index of the current file
+        """
+        while True:
+            # each time, read the file in a batch of lines, for efficiency and memory considerations
+            line_batch = list(islice(f, batch_size))
+            if not line_batch:
+                break
+
+            batch_result = ""
+            # iterate through all lines in a batch and form a big string
+            for line in line_batch:
+                # append basename to each line and append the line to the big string
+                batch_result += line.strip('\n') + ',\"' + self.__basenames[i] + '\"\n'
+
+            # each time, write the result of the current batch to STDOUT
+            # for efficiency and memory considerations
+            sys.stdout.write(batch_result)
 
 
     def combine_csv(self):
@@ -54,33 +95,28 @@ class CSVCombiner:
 
         batch_size = 10
 
+        # iterate through all urls and read files
         for i, url in enumerate(self.__urls):
             if i == 0:
                 with open(url, 'r') as f:
-                    first_line = f.readline().strip('\n') + ',\"filename\"'
-                    print(first_line)
-                    while True:
-                        line_batch = list(islice(f, batch_size))
-                        if not line_batch:
-                            break
-                        batch_result = ""
-                        for line in line_batch:
-                            batch_result += line.strip('\n') + ',\"' + self.__basenames[i] + '\"\n'
-                        sys.stdout.write(batch_result)
+                    # for the first file, keep its first line as the combined file's column names
+                    first_line = f.readline().strip('\n') + ',\"filename\"\n'
+                    # write to STDOUT
+                    sys.stdout.write(first_line)
+
+                    # read, modify, and write subsequent lines of the file in batches of lines
+                    self.read_write_util(batch_size, f, i)
             else:
                 with open(url, 'r') as f:
+                    # for the subsequent files, skip the first line
                     next(f)
-                    while True:
-                        line_batch = list(islice(f, batch_size))
-                        if not line_batch:
-                            break
-                        batch_result = ""
-                        for line in line_batch:
-                            batch_result += line.strip('\n') + ',\"' + self.__basenames[i] + '\"\n'
-                        sys.stdout.write(batch_result)
+
+                    # read, modify, and write subsequent lines of the file in batches of lines
+                    self.read_write_util(batch_size, f, i)
 
 
 def main():
+    """Receive command line arguments and use CSVCombiner to combine files"""
     combiner = CSVCombiner(sys.argv[1:])
     combiner.combine_csv()
 
