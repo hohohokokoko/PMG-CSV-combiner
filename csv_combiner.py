@@ -16,20 +16,20 @@ class CSVCombiner:
     """Validate and combine multiple CSV files"""
     def __init__(self, args):
         """Initialize a CSVCombiner object with a list of file urls"""
-        self.__urls = args
-        self.__basenames = []
+        self.urls = args
+        self.basenames = []
 
 
     def validate_args(self):
         """Validate the number of files"""
-        if len(self.__urls) <= 1:
+        if len(self.urls) <= 1:
             sys.exit("Please specify at least two files.")
 
 
     def validate_files(self):
         """Validate files exist and not empty"""
         # iterate through all urls
-        for url in self.__urls:
+        for url in self.urls:
             if not os.path.exists(url):
                 sys.exit("File does not exist: " + url)
             if os.path.getsize(url) == 0:
@@ -37,27 +37,29 @@ class CSVCombiner:
 
 
     def validate_columns(self):
-        """Validate all files have the same column names"""
-        column_names = ""
+        """Validate all files have the same column headers"""
+        column_headers = ""
         # iterate through all urls and read files
-        for i, url in enumerate(self.__urls):
+        for i, url in enumerate(self.urls):
             first_line = ""
             with open(url, 'r') as f:
-                # only read the first line of each file which is the column names
+                # only read the first line of each file which is the column headers
                 first_line = f.readline().strip('\n')
-            if (i == 0):
-                column_names = first_line
+
+            if i == 0:
+                column_headers = first_line
             else:
-                if first_line != column_names:
-                    sys.exit("Files have different column names")
+                # for subsequent files, column headers should be the same as previous ones
+                if first_line != column_headers:
+                    sys.exit("Files have different column headers")
 
 
     def get_basename(self):
         """Get basenames of all files"""
         # iterate through all urls
-        for url in self.__urls:
+        for url in self.urls:
             # store each file's basename
-            self.__basenames.append(os.path.basename(url))
+            self.basenames.append(os.path.basename(url))
 
 
     def read_write_util(self, batch_size, f, i):
@@ -79,7 +81,7 @@ class CSVCombiner:
             # iterate through all lines in a batch and form a big string
             for line in line_batch:
                 # append basename to each line and append the line to the big string
-                batch_result += line.strip('\n') + ',\"' + self.__basenames[i] + '\"\n'
+                batch_result += line.strip('\n') + ',\"' + self.basenames[i] + '\"\n'
 
             # each time, write the result of the current batch to STDOUT
             # for efficiency and memory considerations
@@ -96,10 +98,10 @@ class CSVCombiner:
         batch_size = 10
 
         # iterate through all urls and read files
-        for i, url in enumerate(self.__urls):
+        for i, url in enumerate(self.urls):
             if i == 0:
                 with open(url, 'r') as f:
-                    # for the first file, keep its first line as the combined file's column names
+                    # for the first file, keep its first line as the combined file's column headers
                     first_line = f.readline().strip('\n') + ',\"filename\"\n'
                     # write to STDOUT
                     sys.stdout.write(first_line)
