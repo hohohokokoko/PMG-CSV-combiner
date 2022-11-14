@@ -56,7 +56,7 @@ Several special cases are tested.
 
 GitHub Actions is used as the CI/CD tool. ```.github/workflows/main.yml``` defines the workflow of build. It runs scripts of ```install```, ```lint```, and ```test``` from ```Makefile``` upon each push. So this is the CI part. The CD part could be extended in this workflow for future use.
 
-# Example Output
+## Example Output
 
 Given two input files named `clothing.csv` and `accessories.csv`.
 
