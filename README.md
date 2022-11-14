@@ -1,4 +1,4 @@
-[![Python application](https://github.com/hohohokokoko/PMG-CSV-combiner/actions/workflows/main.yml/badge.svg)](https://github.com/hohohokokoko/PMG-CSV-combiner/actions/workflows/main.yml)
+[![CSV combiner](https://github.com/hohohokokoko/PMG-CSV-combiner/actions/workflows/main.yml/badge.svg)](https://github.com/hohohokokoko/PMG-CSV-combiner/actions/workflows/main.yml)
 
 # PMG-CSV-combiner
 
