@@ -76,7 +76,7 @@ class TestCSVCombiner(unittest.TestCase):
     def test_two_files(self):
         """Test CSVCombiner.combine_csv() when combinig two files"""
         args = ["./fixtures/accessories.csv", "./fixtures/clothing.csv"]
-        f = open("./target_fixtures/combined_acc_clothing.csv", 'r')
+        f = open("./target_fixtures/combined_acc_clothing.csv", 'r', encoding='utf-8')
         target = f.read()
         f.close()
 
@@ -89,7 +89,7 @@ class TestCSVCombiner(unittest.TestCase):
     def test_three_files(self):
         """Test CSVCombiner.combine_csv() when combinig three files"""
         args = ["./fixtures/accessories.csv", "./fixtures/clothing.csv", "./fixtures/household_cleaners.csv"]
-        f = open("./target_fixtures/combined_acc_clothing_cleaner.csv", 'r')
+        f = open("./target_fixtures/combined_acc_clothing_cleaner.csv", 'r', encoding='utf-8')
         target = f.read()
         f.close()
 
