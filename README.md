@@ -12,9 +12,9 @@ Python 3.10
 
 ## Implementation
 
-A CSVCombiner class is used to do the combination work. A main() function instantiates a CSVCombiner object, receives arguments from the command line, and invokes CSVCombiner.combine_csv() method.
+A ```CSVCombiner``` class is used to do the combination work. A ```main()``` function instantiates a ```CSVCombiner``` object, receives arguments from the command line, and invokes ```CSVCombiner.combine_csv()``` method.
 
-CSVCombiner first validates some special cases. Then it reads each file and does the combination. In fact, we do not need to parse CSV files, we just need to modify and append rows. So CSVCombiner reads, modifies (adds filename), and writes each row of each file. For efficiency and memory considerations, rows are operated in batches (multiple rows each time).
+```CSVCombiner``` first validates some special cases. Then it reads each file and does the combination. In fact, we do not need to parse CSV files, we just need to modify and append rows. So ```CSVCombiner``` reads, modifies (adds filename), and writes each row of each file. For efficiency and memory considerations, rows are operated in batches (multiple rows each time).
 
 ## Usage
 
