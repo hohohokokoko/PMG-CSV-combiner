@@ -42,7 +42,7 @@ class CSVCombiner:
         # iterate through all urls and read files
         for i, url in enumerate(self.urls):
             first_line = ""
-            with open(url, 'r') as f:
+            with open(url, 'r', encoding='utf-8') as f:
                 # only read the first line of each file which is the column headers
                 first_line = f.readline().strip('\n')
 
@@ -100,7 +100,7 @@ class CSVCombiner:
         # iterate through all urls and read files
         for i, url in enumerate(self.urls):
             if i == 0:
-                with open(url, 'r') as f:
+                with open(url, 'r', encoding='utf-8') as f:
                     # for the first file, keep its first line as the combined file's column headers
                     first_line = f.readline().strip('\n') + ',\"filename\"\n'
                     # write to STDOUT
@@ -109,7 +109,7 @@ class CSVCombiner:
                     # read, modify, and write subsequent lines of the file in batches of lines
                     self.read_write_util(batch_size, f, i)
             else:
-                with open(url, 'r') as f:
+                with open(url, 'r', encoding='utf-8') as f:
                     # for the subsequent files, skip the first line
                     next(f)
 
