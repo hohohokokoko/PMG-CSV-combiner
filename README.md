@@ -21,7 +21,7 @@ A ```CSVCombiner``` class is used to do the combination work. A ```main()``` fun
 Run the script
 
 ```
-$ python ./csv_combiner.py <file_url_1> <file_url_2> [more file urls]
+$ python csv_combiner.py <file_url_1> <file_url_2> [more file urls]
 ```
 
 e.g.
