@@ -95,7 +95,7 @@ class CSVCombiner:
         self.validate_columns()
         self.get_basename()
 
-        batch_size = 10
+        batch_size = 100
 
         # iterate through all urls and read files
         for i, url in enumerate(self.urls):
